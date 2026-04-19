@@ -1,0 +1,422 @@
+{
+  "info": {
+    "_postman_id": "4034843a-cc16-41b8-8aac-1191270d564c",
+    "name": "User",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "12111285"
+  },
+  "item": [
+    {
+      "name": "[POS] create user",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "",
+              "//set variable username",
+              "var username = pm.variables.replaceIn(\"{{$randomUserName}}\");",
+              "pm.globals.set(\"username\", username);",
+              "console.log(\"cek\", pm.globals.get(\"username\"));"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "pm.test(\"response cotains code, type, and message\", function(){",
+              "    pm.expect(jsonData.code).to.eql(200);",
+              "    pm.expect(jsonData.type).to.not.be.null;",
+              "    pm.expect(jsonData.message).to.not.be.null;",
+              "})",
+              "",
+              "//ambil params dari request body & set global",
+              "var requestBody = pm.request.body.raw;",
+              "var parsedBody = JSON.parse(requestBody)",
+              "pm.globals.set(\"username\", parsedBody.username);",
+              "pm.globals.set(\"firstname\", parsedBody.firstName)",
+              "pm.globals.set(\"lastname\", parsedBody.lastName);",
+              "pm.globals.set(\"email\", parsedBody.email);",
+              "pm.globals.set(\"password\", parsedBody.password);",
+              "pm.globals.set(\"phone\", parsedBody.phone);",
+              "pm.globals.set(\"userstatus\", parsedBody.userStatus)",
+              "console.log(\"username2\", pm.globals.get(\"username\"));",
+              "console.log(\"password\", pm.globals.get(\"password\"));",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 3,\n  \"username\": \"{{username}}\",\n  \"firstName\": \"{{$randomFirstName}}\",\n  \"lastName\": \"{{$randomLastName}}\",\n  \"email\": \"{{username}}@yopmail.com\",\n  \"password\": \"Abcd1234\",\n  \"phone\": \"08{{$randomPhoneNumber}}\",\n  \"userStatus\": 0\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{test_env_host}}/user",
+          "host": [
+            "{{test_env_host}}"
+          ],
+          "path": [
+            "user"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[POS] Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "pm.test(\"Response contains message 'logged in user session:'\", function () {",
+              "    pm.expect(jsonData.code).to.eql(200);",
+              "    pm.expect(jsonData.type).to.not.be.null;",
+              "    pm.expect(jsonData.message).contain(\"logged in user session:\");",
+              "});",
+              "",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{test_env_host}}/user/login?username={{username}}&password={{password}}",
+          "host": [
+            "{{test_env_host}}"
+          ],
+          "path": [
+            "user",
+            "login"
+          ],
+          "query": [
+            {
+              "key": "username",
+              "value": "{{username}}"
+            },
+            {
+              "key": "password",
+              "value": "{{password}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[POS] Get User by valid username",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "pm.test(\"Response contain user details\", function () {",
+              "    pm.expect(jsonData.id).to.not.be.null;",
+              "    pm.expect(jsonData.username).to.eql(pm.globals.get(\"username\"));",
+              "    pm.expect(jsonData.firstName).to.eql(pm.globals.get(\"firstname\"));",
+              "    pm.expect(jsonData.lastName).to.eql(pm.globals.get(\"lastname\"));",
+              "    pm.expect(jsonData.email).to.eql(pm.globals.get(\"email\"));",
+              "    pm.expect(jsonData.password).to.eql(pm.globals.get(\"password\"));",
+              "    pm.expect(jsonData.phone).to.eql(pm.globals.get(\"phone\"));",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{test_env_host}}/user/{{username}}",
+          "host": [
+            "{{test_env_host}}"
+          ],
+          "path": [
+            "user",
+            "{{username}}"
+          ],
+          "query": [
+            {
+              "key": "",
+              "value": null,
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[POS] Delete User by valid username",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "pm.test(\"Response contains message 'username'\", function () {",
+              "    pm.expect(jsonData.code).to.eql(200);",
+              "    pm.expect(jsonData.type).to.not.be.null;",
+              "    pm.expect(jsonData.message).to.eql(pm.globals.get(\"username\"));",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{test_env_host}}/user/{{username}}",
+          "host": [
+            "{{test_env_host}}"
+          ],
+          "path": [
+            "user",
+            "{{username}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[NEG] Delete User by invalid username",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "",
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{test_env_host}}/user/{{username}}",
+          "host": [
+            "{{test_env_host}}"
+          ],
+          "path": [
+            "user",
+            "{{username}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[NEG] Get User by invalid username",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "pm.test(\"Response contains message 'User not found'\", function () {",
+              "    pm.expect(jsonData.code).not.null;",
+              "    pm.expect(jsonData.type).to.eql(\"error\");",
+              "    pm.expect(jsonData.message).to.eql(\"User not found\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{test_env_host}}/user/{{username}}",
+          "host": [
+            "{{test_env_host}}"
+          ],
+          "path": [
+            "user",
+            "{{username}}"
+          ],
+          "query": [
+            {
+              "key": "",
+              "value": null,
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "[NEG] Get User by symbol username",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Status code is 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "",
+              "pm.test(\"Response contains '400 Bad Request' text\", function () {",
+              "    pm.expect(pm.response.text()).contain(\"400 Bad Request\");",
+              "});",
+              "",
+              "pm.test(\"Response is not JSON format\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).not.contain(\"application/json\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{test_env_host}}/user/&^&%&%",
+          "host": [
+            "{{test_env_host}}"
+          ],
+          "path": [
+            "user",
+            "&^&%&%"
+          ],
+          "query": [
+            {
+              "key": "",
+              "value": null,
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
