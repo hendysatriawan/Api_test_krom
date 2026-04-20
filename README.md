@@ -9,7 +9,7 @@ API Testing project for Petstore API using Postman & Newman.
 | Tool | Version |
 |------|---------|
 | Postman | latest |
-| Newman | latest |
+| Newman | 6.2.1 |
 | newman-reporter-htmlextra | latest |
 
 ---
